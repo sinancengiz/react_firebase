@@ -1,7 +1,8 @@
 import React from 'react';
-import { Container, Row, Col,Jumbotron } from 'react-bootstrap';
+import { Container, Row, Col,Jumbotron, Image} from 'react-bootstrap';
 import sun_image from '../../images/clouds_sun.png'
 import weather_image from '../../images/weather_types.png'
+import wireframe from '../../images/wireframe.png'
 
 
 const landingStyle = {
@@ -25,6 +26,11 @@ const rightBoxStyle = {
   height:"400px"
 };
 
+const wireframe_image = {
+  backgroundColor: "lightblue",
+  width:"100%"
+};
+
 const Landing = () => (
 
 <Container style={landingStyle}>
@@ -37,6 +43,14 @@ const Landing = () => (
       </p>
       
     </Jumbotron>
+    </Col>
+  </Row>
+  <Row>
+    <Col>
+      <Jumbotron id="wire_frame_jumbotron">
+        <h2>Wireframe of the website</h2>
+        <Image style={wireframe_image} src={wireframe} rounded />
+      </Jumbotron>
     </Col>
   </Row>
   <Row>
