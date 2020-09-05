@@ -3,6 +3,7 @@ import React from 'react';
 import { withAuthorization } from '../Session';
 import { Container, Row, Col,Table,Jumbotron} from 'react-bootstrap';
 import { FavoriteWebsites } from '../FavoritWebsites';
+import { Chart } from '../Chart';
  
 class HomePage extends React.Component {
   constructor(props) {
@@ -21,6 +22,7 @@ class HomePage extends React.Component {
       temp_max:"",
       pressure:"",
       wind_speed:"",
+      weather_icon:"",
       websites:[],
     };
   }
@@ -33,7 +35,6 @@ class HomePage extends React.Component {
       let name = (snapshot.val() && snapshot.val().username) || 'Anonymous';
       let code = (snapshot.val() && snapshot.val().zipcode) || 'No Zipcode';
       let websites = (snapshot.val() && snapshot.val().favoriteWebsites) || [];
-      console.log(websites)
 
       fetch("https://api.openweathermap.org/data/2.5/weather?zip="+code+",us&appid=a1fa6d245b03b290a8f678bb5b15a5bd")
       .then(response => response.json())
@@ -42,11 +43,12 @@ class HomePage extends React.Component {
           current_city: data.name,
           description: data.weather[0].description,
           humidity:data.main.humidity,
-          temp:data.main.temp,
-          temp_min:data.main.temp_min,
-          temp_max:data.main.temp_max,
+          temp:parseInt(9/5*(data.main.temp - 273) + 32) ,
+          temp_min: parseInt(9/5*(data.main.temp_min - 273) + 32),
+          temp_max:parseInt(9/5*(data.main.temp_max - 273) + 32),
           pressure:data.main.pressure,
           wind_speed:data.wind.speed,
+          weather_icon:data.weather[0].icon,
           websites: websites,
         }))
 
@@ -83,9 +85,8 @@ class HomePage extends React.Component {
     });
   }
 
-  edit_website = (website) => {
-    // this is a function to edit a selecte website
-      let new_website = prompt("enter new website:")
+  save_new_website = (website, new_website) => {
+    // this is a function to edit a selected website
       let index_of_edit_website = this.state.websites.indexOf(website)
       let website_list = this.state.websites
       website_list[index_of_edit_website] = new_website
@@ -132,38 +133,39 @@ class HomePage extends React.Component {
 
 
   render() {
-    const { user_id, username, zipcode, loading ,current_city, description,humidity,temp,temp_min,temp_max, pressure, wind_speed} = this.state;
- 
+    const { user_id, username, zipcode, loading ,current_city, description,humidity,temp,temp_min,temp_max, pressure, wind_speed, weather_icon} = this.state;
     return (
-      
       <div>
         {loading && <div>Loading ...</div>}
         <User user_id= {user_id} username={username} zipcode={zipcode} current_city={current_city} description= {description} 
-        add_new_website = {this.add_new_website} delete_website = {this.delete_website}  edit_website = {this.edit_website}
-        humidity={humidity} temp={temp} temp_min={temp_min} temp_max={temp_max} pressure={pressure} wind_speed={wind_speed} websites={this.state.websites} />
+        add_new_website = {this.add_new_website} delete_website = {this.delete_website}  save_new_website = {this.save_new_website}
+        humidity={humidity} temp={temp} temp_min={temp_min} temp_max={temp_max} pressure={pressure} wind_speed={wind_speed} websites={this.state.websites} weather_icon={weather_icon}/>
       </div>
-      
     );
   }
 }
 
-const User = ({user_id, username, zipcode,current_city,description,humidity,temp,temp_min,temp_max, pressure, wind_speed, websites , add_new_website, delete_website , edit_website}) => (
+const User = ({user_id, username, zipcode,current_city,description,humidity,temp,temp_min,temp_max, pressure, wind_speed, websites , add_new_website, delete_website , save_new_website, weather_icon}) => (
       <Container>
         <Row>
         <Col>
-        <Jumbotron>
-          <h1>Welcome to Your Home Page</h1>
+        <Jumbotron  className="landing_jumbotron">
+          <h1>{username.toUpperCase()}, Welcome to {current_city.toUpperCase()}!  <img src={'https://openweathermap.org/img/wn/'+weather_icon+'@2x.png'} alt="weather"></img></h1>
           <p>
-          {username}, This is your home page, below you can see current weather data in the eather data table and see your favorite websites 
+            This is your home page, below you can see current weather data for {current_city.toUpperCase()} in the weather data table and see your favorite websites 
           </p>
+          
         </Jumbotron>
         </Col>
         </Row>
         <Row>
-         <Col>
-          <FavoriteWebsites user_id={user_id} websites = {websites} add_new_website ={add_new_website} delete_website ={delete_website} edit_website ={edit_website}/>
+          <Chart humidity = {humidity} current_city={current_city} avarage_temp ={temp} pressure = {pressure} wind_speed = {wind_speed}/>
+        </Row>
+        <Row>
+         <Col md={12} lg={6}>
+          <FavoriteWebsites user_id={user_id} websites = {websites} add_new_website ={add_new_website} delete_website ={delete_website} save_new_website ={save_new_website}/>
         </Col>
-        <Col>
+        <Col md={12} lg={6}>
         <Table striped bordered hover>
             <thead>
               <tr>
@@ -186,15 +188,15 @@ const User = ({user_id, username, zipcode,current_city,description,humidity,temp
               </tr>
               <tr>
                 <td>Avarage Temperature</td>
-                <td>{temp} Kelvin</td>
+                <td>{temp} Fahrenheit</td>
               </tr>
               <tr>
                 <td>Min Temp  </td>
-                <td>{temp_min} Kelvin</td>
+                <td>{temp_min} Fahrenheit</td>
               </tr>
               <tr>
                 <td>Max Temp</td>
-                <td>{temp_max} Kelvin</td>
+                <td>{temp_max} Fahrenheit</td>
               </tr>
               <tr>
                 <td>Pressure </td>
@@ -208,7 +210,6 @@ const User = ({user_id, username, zipcode,current_city,description,humidity,temp
       </Container>
       
 );
-
  
 const condition = authUser => !!authUser;
  

@@ -1,11 +1,9 @@
 import React from 'react';
- 
 import { PasswordForgetForm } from '../PasswordForget';
 import PasswordChangeForm from '../PasswordChange';
 import { AuthUserContext, withAuthorization } from '../Session';
 import * as ROUTES from '../../constants/routes';
-
-import { Button, Col, Form } from 'react-bootstrap';
+import { Container, Row, Col,Button,Form, Jumbotron} from 'react-bootstrap';
  
 class AccountPage extends React.Component {
   constructor(props) {
@@ -48,32 +46,47 @@ class AccountPage extends React.Component {
     return (
       <AuthUserContext.Consumer>
       {authUser => (
-      <div className="forms">
-        <h1>Current User: {authUser.email}</h1>
-        <br></br>
-        <h2>Reset Your Password with Email</h2>
-        <PasswordForgetForm />
-        <br></br>
-        <h2>Create New Password</h2>
-        <PasswordChangeForm />
-        <br></br>
-        <h1>Change Zipcode</h1>
-        <Form onSubmit={(event) => this.onSubmit(event, authUser.uid)}>
-            <Form.Group as={Col} controlId="fromGridZipcode">
-            <Form.Control           
-                name="zipcode"
-                value={zipcode}
-                onChange={this.onChange}
-                type="text"
-                placeholder="Zip Code"/>
-            </Form.Group>
+        <Container>
+          <Row>
+            <Col>
+            <Jumbotron className="landing_jumbotron">
+                <h1>Current User: {authUser.email}</h1>
+            </Jumbotron>
+              
+            </Col>
+          </Row>
+          <Row>
+            <Col className="reset_forms" md={6}>
+              <h2>Reset Your Password with Email</h2>
+              <PasswordForgetForm />
+            </Col>
+            <Col className="reset_forms" md={6}>
+              <h2>Create New Password</h2>
+              <PasswordChangeForm />
+            </Col>
+          </Row>
+          <Row>
+            <Col id="change_zipcode_form">
+              <h1>Change Zipcode</h1>
+              <Form onSubmit={(event) => this.onSubmit(event, authUser.uid)}>
+                  <Form.Group as={Col} controlId="fromGridZipcode">
+                  <Form.Control           
+                      name="zipcode"
+                      value={zipcode}
+                      onChange={this.onChange}
+                      type="text"
+                      placeholder="Zip Code"/>
+                  </Form.Group>
 
-          <Button variant="primary" disabled={isInvalid} type="submit">
-            Change Zipcode
-          </Button>
-          {error && <p>{error.message}</p>}
-          </Form>
-      </div>
+                <Button variant="primary" disabled={isInvalid} type="submit">
+                  Change Zipcode
+                </Button>
+                {error && <p>{error.message}</p>}
+                </Form>
+            </Col>
+          </Row>
+        </Container>
+      
       )}
     
       </AuthUserContext.Consumer>

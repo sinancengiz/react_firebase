@@ -5,7 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
- 
+ width: 100%;
 }
 
 code {
@@ -33,3 +33,34 @@ code {
   padding-left: 20%;
   padding-right: 20%;
 }
+
+.landing_jumbotron{
+  background-image: url("images/sky_image.jpg");
+  margin-top: 50px;
+}
+
+
+#app_div{
+  background-color: lightblue;
+  min-height: 1000px;
+}
+
+.charts{
+  padding:20px;
+  text-align: center;
+}
+
+.reset_forms{
+  padding-right: 10%;
+  padding-left: 10%;
+  text-align: center;
+  margin-top: 50px;
+}
+
+#change_zipcode_form{
+  padding-right: 25%;
+  padding-left: 25%;
+  text-align: center;
+  margin-top: 50px;
+}
+

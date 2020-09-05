@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link} from 'react-router-dom';
- 
+import * as ROLES from '../../constants/roles';
 import * as ROUTES from '../../constants/routes';
 import SignOutButton from '../SignOut';
 import { AuthUserContext } from '../Session';
@@ -11,20 +11,20 @@ const Navigation = () => (
   <div>
     <AuthUserContext.Consumer>
       {authUser =>
-        authUser ? <NavigationAuth /> : <NavigationNonAuth />
+        authUser ? <NavigationAuth authUser={authUser} /> : <NavigationNonAuth />
       }
     </AuthUserContext.Consumer>
   </div>
 );
 
-const NavigationAuth = () => (
+const NavigationAuth = ({ authUser }) => (
   <div>
     <Navbar bg="dark" variant="dark">
     <Navbar.Brand href="#home">Firebase</Navbar.Brand>
     <Nav className="mr-auto">
       <Nav.Link as={Link} to={ROUTES.HOME}>Home</Nav.Link>
       <Nav.Link as={Link} to={ROUTES.ACCOUNT}>Account</Nav.Link>
-      <Nav.Link as={Link} to={ROUTES.ADMIN}>Admin</Nav.Link>
+      {!!authUser.roles[ROLES.ADMIN] && (<Nav.Link as={Link} to={ROUTES.ADMIN}>Admin</Nav.Link>)}
     </Nav>
     <Form inline>
       <SignOutButton />

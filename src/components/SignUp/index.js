@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
- 
+import * as ROLES from '../../constants/roles';
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
  
@@ -20,9 +20,11 @@ const INITIAL_STATE = {
   zipcode:'',
   passwordOne: '',
   passwordTwo: '',
+  isAdmin:false,
   error: null,
 };
  
+
 class SignUpFormBase extends Component {
   constructor(props) {
     super(props);
@@ -31,7 +33,12 @@ class SignUpFormBase extends Component {
   }
  
   onSubmit = event => {
-    const { username, email,zipcode, passwordOne } = this.state;
+    const { username, email, passwordOne, isAdmin, zipcode} = this.state;
+    const roles = {};
+    
+    if (isAdmin) {
+      roles[ROLES.ADMIN] = ROLES.ADMIN;
+    }
  
     this.props.firebase
       .doCreateUserWithEmailAndPassword(email, passwordOne)
@@ -43,6 +50,7 @@ class SignUpFormBase extends Component {
             username,
             email,
             zipcode,
+            roles,
           });
       })
       .then(authUser => {
@@ -60,6 +68,10 @@ class SignUpFormBase extends Component {
   onChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
+
+  onChangeCheckbox = event => {
+    this.setState({ [event.target.name]: event.target.checked });
+  };
  
   render() {
     const {
@@ -68,6 +80,7 @@ class SignUpFormBase extends Component {
       zipcode,
       passwordOne,
       passwordTwo,
+      isAdmin,
       error,
     } = this.state;
 
@@ -124,6 +137,16 @@ class SignUpFormBase extends Component {
             onChange={this.onChange}
             type="password"
             placeholder="Confirm Password" />
+        </Form.Group>
+
+
+        <Form.Group controlId="formBasicCheckbox">
+          <Form.Check  
+            label="Are you an Admin?"           
+            name="isAdmin"
+            type="checkbox"
+            checked={isAdmin}
+            onChange={this.onChangeCheckbox}/>
         </Form.Group>
  
      

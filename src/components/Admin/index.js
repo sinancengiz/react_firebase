@@ -1,7 +1,8 @@
 import React from 'react';
-
+import { compose } from 'recompose';
+import { withFirebase } from '../Firebase';
 import { withAuthorization } from '../Session';
-
+import * as ROLES from '../../constants/roles';
 import { Table } from 'react-bootstrap';
  
 class AdminPage extends React.Component {
@@ -50,6 +51,9 @@ class AdminPage extends React.Component {
 
 const UserList = ({ users }) => (
   <div >
+  <p>
+    The Admin Page is accessible by every signed in admin user.
+  </p>
   <Table striped bordered hover size="sm">
       <thead>
         <tr>
@@ -57,6 +61,7 @@ const UserList = ({ users }) => (
           <th>Email</th>
           <th>Username</th>
           <th>Zipcode</th>
+          <th>Role</th>
         </tr>
       </thead>
       <tbody>
@@ -66,6 +71,8 @@ const UserList = ({ users }) => (
           <td>{user.email}</td>
           <td>{user.username}</td>
           <td>{user.zipcode}</td>
+          <td>{!!user.roles && (user.roles.ADMIN)}</td>
+          
       </tr>
     ))}
       </tbody>
@@ -73,7 +80,11 @@ const UserList = ({ users }) => (
   </div>
 );
  
-const condition = authUser => !!authUser;
+const condition = authUser =>
+  authUser && !!authUser.roles[ROLES.ADMIN];
  
-export default withAuthorization(condition)(AdminPage);
+export default compose(
+  withAuthorization(condition),
+  withFirebase,
+)(AdminPage);
 
