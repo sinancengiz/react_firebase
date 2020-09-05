@@ -5,6 +5,8 @@ import { withAuthorization } from '../Session';
 import * as ROLES from '../../constants/roles';
 import { Table } from 'react-bootstrap';
  
+
+
 class AdminPage extends React.Component {
   constructor(props) {
     super(props);
@@ -54,7 +56,7 @@ const UserList = ({ users }) => (
   <p>
     The Admin Page is accessible by every signed in admin user.
   </p>
-  <Table striped bordered hover size="sm">
+  <Table responsive striped bordered hover size="sm" >
       <thead>
         <tr>
           <th>ID</th>
